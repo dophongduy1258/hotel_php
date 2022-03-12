@@ -1,0 +1,669 @@
+{
+	"info": {
+		"_postman_id": "1b634a54-470b-4124-94f8-842f2938e301",
+		"name": "Blockreal - Bổ sung API trading",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Init Fee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{extend_domain}}/init/fee?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"init",
+						"fee"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Init Login - Seller",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "48b09154-cdab-4188-952e-bc71a3625a89",
+						"exec": [
+							"",
+							"var responseJSON;",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"",
+							"if (responseCode.code === 200) {",
+							"    try {",
+							"        responseJSON = JSON.parse(responseBody);",
+							"        ",
+							"        if (responseJSON.status == 200 ) {",
+							"            pm.environment.set(\"sessionToken_seller\", responseJSON.data.sessionToken);",
+							"            console.log( pm.environment.get(\"sessionToken_seller\") );",
+							"        } else {",
+							"            tests[\"Failed Loginxx. \" + responseJSON.message] = false; ",
+							"        }",
+							"    } catch(e) {",
+							"        tests[\"Failed Loginxxxxx. \" + responseJSON.message] = false; ",
+							"    }",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "lehuantest2",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/init/login?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"init",
+						"login"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Init Login - Buyer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cfcadf78-3cf5-42b2-af66-f36e1bd00156",
+						"exec": [
+							"",
+							"var responseJSON;",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"",
+							"if (responseCode.code === 200) {",
+							"    try {",
+							"        responseJSON = JSON.parse(responseBody);",
+							"        ",
+							"        if (responseJSON.status == 200 ) {",
+							"            pm.environment.set(\"sessionToken_buyer\", responseJSON.data.sessionToken);",
+							"        } else {",
+							"            tests[\"Failed Login. \" + responseJSON.message] = false; ",
+							"        }",
+							"    } catch(e) {",
+							"        tests[\"Failed Login. \" + responseJSON.message] = false; ",
+							"    }",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "lehuan",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/init/login?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"init",
+						"login"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Market",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_buyer}}",
+							"type": "text"
+						},
+						{
+							"key": "keyword",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "page",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/market?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"market"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "trade History",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_seller}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/history?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"history"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trade - BUY",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_buyer}}",
+							"type": "text"
+						},
+						{
+							"key": "trade_id",
+							"value": "5",
+							"description": "ID của giao dịch cần mua",
+							"type": "text"
+						},
+						{
+							"key": "cyclos_transaction_id",
+							"value": "",
+							"description": "id cyclos của giao dịch chuyển tiền",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "1",
+							"description": "Số lượng cần mua",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/buy?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"buy"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				},
+				"description": "Cần chạy API kiểm tra số lượng còn lại của trate_id trước khi gọi api chạy thanh toán từ cyclos, để đảm báo số lượng còn đủ, ko thì API sẽ phát hiện là hết số lượng nhưng đã chuyển tiền rồi thì mệt."
+			},
+			"response": []
+		},
+		{
+			"name": "Trade - SELL",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_seller}}",
+							"type": "text"
+						},
+						{
+							"key": "product_id",
+							"value": "13",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "5000000",
+							"type": "text"
+						},
+						{
+							"key": "note",
+							"value": "Mua xuất từ nhà đầu tư khác",
+							"description": "255 ký tự limit",
+							"type": "text"
+						},
+						{
+							"key": "contact_name",
+							"value": "Lê Ngọc Huân Test 2",
+							"type": "text"
+						},
+						{
+							"key": "contact_mobile",
+							"value": "0905094288",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/sell?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"sell"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trade Cancel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_seller}}",
+							"type": "text"
+						},
+						{
+							"key": "trade_id",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/cancel?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"cancel"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trade Detail",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "trade_id",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "token",
+							"value": "{{sessionToken_buyer}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/detail?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"detail"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Trade Assets",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_seller}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/trade/assets?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"trade",
+						"assets"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_buyer}}",
+							"type": "text"
+						},
+						{
+							"key": "value",
+							"value": "20000000",
+							"description": "Giá trị cọc",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "0",
+							"description": "=0 là cọc; =1 là mua;",
+							"type": "text"
+						},
+						{
+							"key": "transaction_id",
+							"value": "123123123123123123",
+							"description": "Transaction ID cylos khi chuyển cọc trả về",
+							"type": "text"
+						},
+						{
+							"key": "note",
+							"value": "Ghi chú",
+							"description": "Người dùng ghi chú giao dịch",
+							"type": "text"
+						},
+						{
+							"key": "object",
+							"value": "{\n                \"id\": \"1217707\",\n                \"name\": \"CÂY PHÁT TÀI\",\n                \"code\": \"BRS749FL\",\n                \"price\": \"749000\",\n                \"currency_unit\": \"VND\",\n                \"quantity\": \"79\",\n                \"description\": \"Cây phát tài hay còn gọi là Thiết Mộc Lan, rất được mọi người ưa chuộng trưng bày trong không gian sống của mình với hy vọng sẽ gặp nhiều điều may mắn, thuận lợi trong công việc cũng như cuộc sống.\",\n                \"image\": \"https://static.ecosite.vn/8368/product/2019/03/15/thumb_phattaikhuc-380x475-1552637411.jpg\",\n                \"link\": \"https://blockreal.ecosite.vn/cay-phat-tai-b1217707\",\n                \"count_view\": \"5\",\n                \"count_sell\": \"0\",\n                \"created_date\": \"1552637415\"\n            }",
+							"description": "object item từ web trả về",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/deposit_info/add?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"deposit_info",
+						"add"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking history",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{sessionToken_buyer}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{extend_domain}}/deposit_info/history?apikey=0123kSKmsdfrtl234sd",
+					"host": [
+						"{{extend_domain}}"
+					],
+					"path": [
+						"deposit_info",
+						"history"
+					],
+					"query": [
+						{
+							"key": "apikey",
+							"value": "0123kSKmsdfrtl234sd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product In Store - from WEB",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "api_key",
+							"value": "{{api_key}}",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "record",
+							"value": "8",
+							"description": "maximum = 24",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{domain}}/product/get",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"product",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product In Store By Category - from WEB",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "api_key",
+							"value": "{{api_key}}",
+							"type": "text"
+						},
+						{
+							"key": "id_category",
+							"value": "307824",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "record",
+							"value": "8",
+							"description": "maximum = 24",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{domain}}/product/get",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"product",
+						"get"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,83 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Ecosite API",
+		"_postman_id": "ccb099e7-e591-2a85-ced4-3fbc1ce0c03e",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Product In Store",
+			"request": {
+				"url": "{{domain}}/product/get",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "api_key",
+							"value": "{{api_key}}",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "record",
+							"value": "8",
+							"description": "maximum = 24",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product In Store By Category",
+			"request": {
+				"url": "{{domain}}/product/get",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "api_key",
+							"value": "{{api_key}}",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "id_category",
+							"value": "307824",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "record",
+							"value": "8",
+							"description": "maximum = 24",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
