@@ -37,6 +37,8 @@ thisPage.into_money = "";
 thisPage.roomId = "";
 thisPage.bookingId = 0;
 
+// test upload doan test
+
 let is_booked_service = false;
 let is_edit_service = false;
 // let get_date_check_in = "";
