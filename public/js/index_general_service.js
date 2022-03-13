@@ -37,8 +37,6 @@ thisPage.into_money = "";
 thisPage.roomId = "";
 thisPage.bookingId = 0;
 
-// test upload doan test
-
 let is_booked_service = false;
 let is_edit_service = false;
 // let get_date_check_in = "";
@@ -124,9 +122,10 @@ $(function () {
   });
 
   $(".btn-cancel-service-table").click(() => {
-    thisPage.bookingId = $("#slBookingId").val();
-    thisPage.funcsToggleShowService(); // đóng bảng chọn dịch vụ
-    thisPage.getLstServiceBooked(thisPage.bookingId);
+    // thisPage.bookingId = $("#slBookingId").val();
+    // thisPage.funcsToggleShowService(); // đóng bảng chọn dịch vụ
+    // thisPage.getLstServiceBooked(thisPage.bookingId);
+    //  ddang lam toi day
   });
 
   $(
@@ -165,16 +164,21 @@ $("body").on("click", "#btn_del_service_booked", function () {
 });
 
 $("body").on("click", ".staff.img_edit_service_booked", function (e) {
-  // let _booking_id = $(this).attr("booking_id");
-  // is_booked_service = false;
+  let _booking_id = $(this).attr("booking_id");
+  is_booked_service = true;
   // is_edit_service = true;
-
+  let storage = localStorage.getItem("lItems");
+  if (storage) {
+    cart = JSON.parse(storage);
+  }
   //   thisPage.funcsLoadDetailServiceBooked(_booking_id);
   // thisPage.getLstServiceBooked(_booking_id);
   thisPage.funcsToggleCreateOrderServiceForm();
   // thisPage.createTPLSelectRoom(_booking_id);
-  //   let _html = thisPage.htmlTitleEdit(1, 2);
-  //   $("#wrap_header_form").html(_html);
+  let _html = `<h2 id="booking_id">${_booking_id}</h2>`;
+  $("#wrap_booking_title").html(_html);
+  let _html_service_booked = thisPage.renderHtmlServiceBooked(cart);
+  $("#lst_service_booked").html(_html_service_booked);
 });
 
 thisPage.createTPLSelectRoom = (_booking_id) => {
@@ -225,59 +229,31 @@ $("body").on("change", "#note", function () {
 });
 
 $("body").on("click", ".btn_choose_service", function () {
-  // localStorage.setItem(
-  //   "lItems",
-  //   JSON.stringify({
-  //     service_id: $(this).val(),
-  //     name: "phở bò",
-  //     price: 20000,
-  //     quantity: 2,
-  //     note: "day là đoạn text mẫu",
-  //   })
-  // );
-
   let new_item = {
     service_id: $(this).val(),
-    name: "phở bò",
-    price: 20000,
-    quantity: 2,
-    note: "day là đoạn text mẫu",
+    name: $(this).attr("name"),
+    price: $(this).attr("price"),
+    quantity: 1,
+    status: $(this).attr("status"),
+    note: $(this).attr("note"),
+    into_money: $(this).attr("price"),
   };
+
   let storage = localStorage.getItem("lItems");
 
   if (storage != null) {
     cart = JSON.parse(storage);
   }
 
-  // console.log(storage);
-  console.log(cart);
   let item = cart.find((i) => i.service_id == $(this).val());
 
   if (item) {
     item.quantity += 1;
+    item.into_money = item.price * item.quantity;
   } else {
     cart.push(new_item);
   }
   localStorage.setItem("lItems", JSON.stringify(cart));
-
-  // alert($(this).val());
-  // let data = new FormData();
-  // data.append("service_id", $(this).val());
-  // _doAjaxNod("POST", data, "service", "idx", "get_detail", true, (res) => {
-  //   // let storage = localStorage.getItem("cart");
-  //   // if (storage) {
-  //   //   cart = JSON.parse(storage);
-  //   // }
-
-  //   // let item = cart.find(i => i.service_id )
-
-  //   // if(item){
-  //   //   item.quan
-  //   // }else{
-
-  //   // }
-  //   console.log(res.data);
-  // });
 });
 
 thisPage.funcsHandelNote = (note, general_service_id) => {
@@ -375,11 +351,12 @@ thisPage.renderHtmlSelectStatus = () => {
 thisPage.renderHtmlServiceBooked = (lItem) => {
   let _html = "";
   let i = 1;
+  //     <td id="booking_status_id">` + thisPage.renderHtmlSelectStatus();
+  // _html += `</td>
   lItem.forEach((item) => {
-    _html +=
-      `
+    _html += `
         <tr>
-            <td id="${item.id}">${i++}</td>
+            <td>${i++}</td>
             <td id="name" >${item.name}</td>
             <td id="price">${item.price} đ</td>
             <td class="td_quanlity">
@@ -396,14 +373,12 @@ thisPage.renderHtmlServiceBooked = (lItem) => {
                   item.id
                 }" type="text" value="${item.note}"/>
             </td>
-            <td id="booking_status_id">` + thisPage.renderHtmlSelectStatus();
-    _html += `</td>
 
             <td id="total">${item.total} đ</td>
             <td>44,000 đ</td>
             <td>
             ${
-              item.booking_status_id == 8
+              is_booked_service == true
                 ? `<button
                     id="btn_del_service_booked"
                     general_service_id="${item.id}"

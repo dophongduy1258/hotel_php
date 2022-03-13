@@ -190,8 +190,8 @@
                             <button id="btn-open-service" >Chọn dịch vụ</button>
                         </div>
                     </div>
-
-                    {* <div class="col-md-12">
+                    <div id="wrap_booking_title"></div>
+                    <div class="col-md-12">
                         <table class="table table-bg-no">
                             <thead>
                                 <tr>
@@ -200,7 +200,7 @@
                                     <th>Giá</th>
                                     <th>Số lượng</th>
                                     <th>Chú thích</th>
-                                    <th>Trạng thái dịch vụ</th>
+                                    {* <th>Trạng thái dịch vụ</th> *}
                                     <th>Thành tiền</th>
                                     <th>Tổng</th>
                                     <th width="112">@</th>
@@ -209,7 +209,7 @@
                             <tbody id="lst_service_booked">
                             </tbody>
                         </table>
-                    </div> *}
+                    </div>
                 </div>
         
                 <div class="text-right">
@@ -230,7 +230,7 @@
                                         <div class="row">
                                             <div class="col-md-2 col-sm-6 col-xs-12">{$item.name}</div>
                                             <div class="col-md-2 col-sm-6 col-xs-12">{$item.price}</div>
-                                            <div class="col-md-2 col-sm-6 col-xs-12"><button class="btn_choose_service" price="{$item.price}" value="{$item.service_id}">Thêm</button></div>
+                                            <div class="col-md-2 col-sm-6 col-xs-12"><button class="btn_choose_service" name="{$item.name}" status='7' price="{$item.price}" note="" value="{$item.service_id}">Thêm</button></div>
                                         </div>
                                     </li>
                                     
@@ -249,7 +249,7 @@
                                     <div class="row">
                                         <div class="col-md-2 col-sm-6 col-xs-12">{$item.name}</div>
                                         <div class="col-md-2 col-sm-6 col-xs-12">{$item.price}</div>
-                                        <div class="col-md-2 col-sm-6 col-xs-12"><button class="btn_choose_service" price="{$item.price}" value="{$item.service_id}">Thêm</button></div>
+                                        <div class="col-md-2 col-sm-6 col-xs-12"><button class="btn_choose_service" name="{$item.name}" status='7' price="{$item.price}" note="" value="{$item.service_id}">Thêm</button></div>
                                     </div>
                                 </li>
                                 
