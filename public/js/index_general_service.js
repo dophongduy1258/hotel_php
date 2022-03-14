@@ -83,7 +83,7 @@ $(function () {
   thisPage.funcsGet_room_booked_today();
 
   // render select room
-  thisPage.createTPLSelectRoom();
+  // thisPage.createTPLSelectRoom();
 
   // render html tất cả các dịch vụ mà khách đang đặt
   //   thisPage.getLstServiceBooked();
@@ -123,8 +123,14 @@ $(function () {
 
   $(".btn-cancel-service-table").click(() => {
     // thisPage.bookingId = $("#slBookingId").val();
-    // thisPage.funcsToggleShowService(); // đóng bảng chọn dịch vụ
-    // thisPage.getLstServiceBooked(thisPage.bookingId);
+
+    let storage = localStorage.getItem("lItems");
+    if (storage) {
+      cart = JSON.parse(storage);
+    }
+
+    thisPage.funcsToggleShowService(); // đóng bảng chọn dịch vụ
+    thisPage.getLstServiceBooked(cart);
     //  ddang lam toi day
   });
 
@@ -147,24 +153,20 @@ $(function () {
 });
 
 $("body").on("click", "#btn_del_service_booked", function () {
-  //   console.log($(this).attr("general_service_id"));
-  let data = new FormData();
-  data.append("general_service_id", $(this).attr("general_service_id"));
-  _doAjaxNod(
-    "POST",
-    data,
-    "general_service",
-    "delete",
-    "delete_service_booked",
-    true,
-    (res) => {
-      thisPage.getLstServiceBooked();
-    }
-  );
+  // console.log($(this).attr("idx_service"));
+
+  let storage = localStorage.getItem("lItems");
+  cart = JSON.parse(storage);
+
+  cart.splice($(this).attr("idx_service"), 1);
+
+  localStorage.setItem("lItems", JSON.stringify(cart));
+  thisPage.getLstServiceBooked(cart);
 });
 
 $("body").on("click", ".staff.img_edit_service_booked", function (e) {
   let _booking_id = $(this).attr("booking_id");
+  thisPage.bookingId = _booking_id;
   is_booked_service = true;
   // is_edit_service = true;
   let storage = localStorage.getItem("lItems");
@@ -181,21 +183,21 @@ $("body").on("click", ".staff.img_edit_service_booked", function (e) {
   $("#lst_service_booked").html(_html_service_booked);
 });
 
-thisPage.createTPLSelectRoom = (_booking_id) => {
-  _doAjaxNod(
-    "POST",
-    "",
-    "general_service",
-    "idx",
-    "get_lst_room_booked",
-    true,
-    (res) => {
-      // console.log(res.data);
-      let _html = thisPage.renderHtmlSelectRoom(_booking_id);
-      $("#wrap_title_room").html(_html);
-    }
-  );
-};
+// thisPage.createTPLSelectRoom = (_booking_id) => {
+//   _doAjaxNod(
+//     "POST",
+//     "",
+//     "general_service",
+//     "idx",
+//     "get_lst_room_booked",
+//     true,
+//     (res) => {
+//       // console.log(res.data);
+//       let _html = thisPage.renderHtmlSelectRoom(_booking_id);
+//       $("#wrap_title_room").html(_html);
+//     }
+//   );
+// };
 
 thisPage.renderHtmlSelectRoom = () => {
   let _html = "...";
@@ -211,9 +213,13 @@ thisPage.renderHtmlSelectRoom = () => {
 
 // xử lý giảm số lượng
 $("body").on("click", ".btn_decrease_quantity", function () {
-  //   console.log($("#quantity").val());
-  let general_service_id = $(this).attr("general_service_id");
-  thisPage.funcsHandelQuantity(-1, general_service_id);
+  // nếu số lượng bé hơn 1 thì báo lỗi
+  if ($(this).attr("quantity") > 1) {
+    let general_service_id = $(this).attr("general_service_id");
+    thisPage.funcsHandelQuantity(-1, general_service_id);
+  } else {
+    alert_dialog("Số lượng không hợp lệ");
+  }
 });
 
 // xử lý tăng số lượng
@@ -230,6 +236,7 @@ $("body").on("change", "#note", function () {
 
 $("body").on("click", ".btn_choose_service", function () {
   let new_item = {
+    booking_id: thisPage.bookingId,
     service_id: $(this).val(),
     name: $(this).attr("name"),
     price: $(this).attr("price"),
@@ -256,79 +263,49 @@ $("body").on("click", ".btn_choose_service", function () {
   localStorage.setItem("lItems", JSON.stringify(cart));
 });
 
+// xử lý ghi chú
 thisPage.funcsHandelNote = (note, general_service_id) => {
-  let data = new FormData();
-  data.append("id", general_service_id);
-  data.append("note", note);
-  _doAjaxNod(
-    "POST",
-    data,
-    "general_service",
-    "idx",
-    "handel_note",
-    true,
-    (res) => {
-      let _html = thisPage.renderHtmlServiceBooked(res.data);
-      $("#lst_service_booked").html(_html);
-    }
-  );
+  let storage = localStorage.getItem("lItems");
+
+  // format về kiểu mảng và gán cho biến cart
+  cart = JSON.parse(storage);
+  // tìm ra object đang cần update lại ghi chú
+  let item = cart.find((i) => i.service_id == general_service_id);
+
+  item.note = note;
+  localStorage.setItem("lItems", JSON.stringify(cart));
+  thisPage.getLstServiceBooked(cart);
 };
 
 // cập nhật lại số lượng và thành tiền của món đang được điều chỉnh
 thisPage.funcsHandelQuantity = (condition, general_service_id) => {
-  //   console.log($(".btn_quantity").attr("service_id"));
-  let data = new FormData();
-  data.append("id", general_service_id);
-  data.append("condition", condition);
-  _doAjaxNod(
-    "POST",
-    data,
-    "general_service",
-    "idx",
-    "handel_quantity",
-    true,
-    (res) => {
-      let _html = thisPage.renderHtmlServiceBooked(res.data);
-      $("#lst_service_booked").html(_html);
-    }
-  );
+  // console.log($(".btn_quantity").attr("general_service_id"));
+  // lấy mảng data từ storage về
+  let storage = localStorage.getItem("lItems");
+
+  // format về kiểu mảng và gán cho biến cart
+  cart = JSON.parse(storage);
+  // tìm ra object đang cần update lại số lượng
+  let item = cart.find((i) => i.service_id == general_service_id);
+  // update lại column số lượng
+  // nếu số lượng mà bé hơn 1 thì aler dialog ( 'Không được âm số lượng ' )
+
+  let update_quantity = item.quantity + condition;
+  // // item.quantity += condition;
+  let update_into_money = item.price * update_quantity;
+
+  item.quantity = update_quantity;
+  item.into_money = update_into_money;
+  // // gọi hàm getLstServiceBooked() để refresh lại data
+  localStorage.setItem("lItems", JSON.stringify(cart));
+  thisPage.getLstServiceBooked(cart);
 };
 
 //  lấy tất cả các dịch vụ đang được đặt
-thisPage.getLstServiceBooked = (_booking_id) => {
-  let booked_serivce = "";
-  let edit_serivce = "";
-
-  if (is_booked_service == true) {
-    booked_serivce = 1;
-    edit_serivce = 0;
-  } else {
-    booked_serivce = 0;
-    edit_serivce = 1;
-  }
-
-  let data = new FormData();
-  data.append("booking_id", _booking_id);
-  //   data.append("booking_id", 22);
-  data.append("is_booked_service", booked_serivce);
-  data.append("is_edit_service", edit_serivce);
-  _doAjaxNod(
-    "POST",
-    data,
-    "general_service",
-    "idx",
-    "get_all_service_booked",
-    true,
-    (res) => {
-      // if (is_edit_service == true) {
-      //   $(".btn_quantity").addClass("hide_content");
-      // }
-      let _html_service_booked = thisPage.renderHtmlServiceBooked(res.data);
-      // let _html_select_status = thisPage.renderHtmlSelectStatus(res.data);
-      $("#lst_service_booked").html(_html_service_booked);
-      $(".btn_quantity").attr("disabled", true);
-    }
-  );
+thisPage.getLstServiceBooked = (lItems) => {
+  let _html_service_booked = thisPage.renderHtmlServiceBooked(lItems);
+  $("#lst_service_booked").html(_html_service_booked);
+  // $(".btn_quantity").attr("disabled", true);
 };
 
 thisPage.getLstStatus = () => {};
@@ -353,35 +330,35 @@ thisPage.renderHtmlServiceBooked = (lItem) => {
   let i = 1;
   //     <td id="booking_status_id">` + thisPage.renderHtmlSelectStatus();
   // _html += `</td>
-  lItem.forEach((item) => {
+  lItem.forEach((item, idx) => {
     _html += `
         <tr>
-            <td>${i++}</td>
+            <td>${idx}</td>
             <td id="name" >${item.name}</td>
             <td id="price">${item.price} đ</td>
             <td class="td_quanlity">
-                <button class="btn_decrease_quantity btn_quantity" general_service_id="${
-                  item.id
-                }" >-</button>
+                <button class="btn_decrease_quantity btn_quantity" quantity="${
+                  item.quantity
+                }" general_service_id="${item.service_id}" >-</button>
                 <p id="quantity" value="${item.quantity}">${item.quantity}</p>
                 <button class="btn_increase_quantity btn_quantity " general_service_id="${
-                  item.id
+                  item.service_id
                 }">+</button>
             </td>
             <td>
                 <input id="note" general_service_id="${
-                  item.id
+                  item.service_id
                 }" type="text" value="${item.note}"/>
             </td>
 
-            <td id="total">${item.total} đ</td>
-            <td>44,000 đ</td>
+            <td id="total">${item.into_money} đ</td>
+            <td>0 đ</td>
             <td>
             ${
               is_booked_service == true
                 ? `<button
                     id="btn_del_service_booked"
-                    general_service_id="${item.id}"
+                    idx_service="${idx}"
                   >
                     X
                   </button>`
@@ -471,13 +448,14 @@ thisPage.funcsGet_history_booked_service = (valFilterByItem = "") => {
     "history_booked_service",
     true,
     (res) => {
+      // console.log(res.data);
       let _html = thisPage.funcsCreateTPL_lstHistoryBookedService(res.data);
       thisPage.lstHistoryBookedService.html(_html);
-      console.log(res.data);
-      console.log("history booked");
     }
   );
 };
+
+//  đang làm phần hiển thị lịch sử booking service
 
 // render list html của booking
 thisPage.funcsCreateTPL_lstHistoryBookedService = (lItems) => {
@@ -553,7 +531,7 @@ thisPage.funcsGet_room_booked_today = (valFilterByItem = "") => {
   );
 };
 
-// render list html của booking
+// render list html của booking hôm nay
 thisPage.funcsCreateTPL_lstRoomBookedToday = (lItems) => {
   let _html = "";
   let i = 1;
@@ -617,9 +595,6 @@ thisPage.funcsCreateTPL_lstRoomBookedToday = (lItems) => {
 thisPage.funcsToggleCreateOrderServiceForm = () => {
   $(".table-detail").toggle();
   $(".infomation_room_booked_today").toggle();
-  // $(".search-order").toggle();
-
-  //   thisPage.bookedServiceBTNCreate.attr("disabled", false);
 };
 
 thisPage.funcsToggleShowService = () => {
@@ -686,34 +661,34 @@ thisPage.emptyFormCreateOrderService = () => {
 };
 
 thisPage.funcsOrderService = () => {
-  // is_booked_service
-  // is_edit_service
-  //   let condition;
-  //   if (is_booked_service == true) {
-  //     condition = "is_booked_service" + is_booked_service;
-  //   } else if (is_edit_service == true) {
-  //     condition = "is_edit_service" + is_edit_service;
-  //   }
-  //   console.log(condition);
-  let data = new FormData();
-  data.append("booking_id", $("#slBookingId").val());
-  data.append("is_booked_service", is_booked_service);
-  data.append("is_edit_service", is_edit_service);
-  _doAjaxNod(
-    "POST",
-    data,
-    "general_service",
-    "save",
-    "save_order_service",
-    true,
-    () => {
-      thisPage.funcsToggleCreateOrderServiceForm();
-      thisPage.funcsGet_LstGeneralService();
-      // thisPage.globalDeleteBookingID = "";
-      // thisPage.funcsGetBooking();
-      // $("#deleteBooking").modal("hide");
-    }
-  );
+  let storage = localStorage.getItem("lItems");
+  // console.log(storage);
+  if (storage) {
+    //  nếu storage có tồn tại thì cho lưu
+    let data = new FormData();
+    data.append("lItems", storage);
+    // data.append("is_booked_service", is_booked_service);
+    // data.append("is_edit_service", is_edit_service);
+    _doAjaxNod(
+      "POST",
+      data,
+      "general_service",
+      "save",
+      "save_order_service",
+      true,
+      () => {
+        thisPage.bookingId = 0;
+        thisPage.funcsToggleCreateOrderServiceForm();
+        thisPage.funcsCreateTPL_lstRoomBookedToday();
+        localStorage.removeItem("lItems");
+        // thisPage.globalDeleteBookingID = "";
+        // thisPage.funcsGetBooking();
+        // $("#deleteBooking").modal("hide");
+      }
+    );
+  } else {
+    return;
+  }
 };
 
 thisPage.funcsDeleteBooking = () => {
